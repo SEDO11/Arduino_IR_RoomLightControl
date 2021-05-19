@@ -17,6 +17,10 @@ void setup()
   lcd.init();                // I2C LCD를 초기화 합니다.
   lcd.backlight();           // 초기에 I2C LCD의 백라이트를 켜줍니다.
   irrecv.enableIRIn();       // 7번핀을 통해 IR신호를 읽는다.
+  /*
+  servo.attach(servoPin); 가 여기 없는 이유는 리모컨을 누르면서 킬 수 있게 만들려고 없앰, 
+  그리고 불안정한 PWM으로 인해 모터가 계속 움직여서 소음이 발생하므로 코드에서 바꿈
+  */
 } 
 
 void loop() 
@@ -24,7 +28,7 @@ void loop()
    if (irrecv.decode(&results)==true){
       switch(results.value){
           case 0xFFA25D: // 불을 킨다
-          servo.attach(servoPin);
+          servo.attach(servoPin);       // 서보 모터를 사용하기 위해 킨다.
           lcd.clear();                  // lcd에 있던 글자를 지운다(안쓰면 글자가 중첩됩니다.)
           lcd.setCursor(3,0);           // 0번째 줄 3번째 셀부터 입력하게 합니다.
           lcd.print("SEDO Room");       // 문구를 출력합니다.
@@ -37,7 +41,7 @@ void loop()
           break;
           
           case 0xFF629D: // 불을 끈다
-          servo.attach(servoPin);
+          servo.attach(servoPin);       // 서보 모터를 사용하기 위해 킨다.
           lcd.clear();                  // lcd에 있던 글자를 지운다(안쓰면 글자가 중첩됩니다.)
           lcd.setCursor(3,0);           // 0번째 줄 3번째 셀부터 입력하게 합니다.
           lcd.print("SEDO Room");       // 문구를 출력합니다.
@@ -57,7 +61,7 @@ void loop()
           lcd.backlight(); //lcd를 킨다
           break;
       }
-      servo.detach();
+      servo.detach(); // 불안정한 PWM으로 인해 모터가 계속 움직이므로 아예 꺼버림
       irrecv.resume(); // 다음 신호 수신
   } 
 }
